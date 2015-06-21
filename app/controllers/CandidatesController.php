@@ -14,6 +14,14 @@ class CandidatesController
         $this->candidates = new Candidates;
     }
 
+    /**
+     * List of all users with their corresponding job applications.
+     *
+     * @api GET /candidates/list
+     * @apiExample Example CURL usage
+     *      curl -i http://localhost/candidates/list
+     *
+     */
     public function index()
     {
         $output = $this->candidates->all();
@@ -21,6 +29,16 @@ class CandidatesController
         return Response::success($output);
     }
 
+    /**
+     * Retrieve job's application information by given id.
+     *
+     * @api GET /candidates/review/:id - Get job's application
+     * @apiParam Integer id - Job's application id.
+     * @apiExample Example CURL usage
+     *      curl -i http://localhost/candidates/review/1
+     *
+     * @param $args Array
+     */
     public function review($args)
     {
         // return bad request response if there is not an ID passed.
@@ -45,6 +63,16 @@ class CandidatesController
         return Response::success($output);
     }
 
+    /**
+     * Delete job's application by given id.
+     *
+     * @api DELETE /candidates/review/:id
+     * @apiParam Integer id - Job's application id.
+     * @apiExample Example CURL usage
+     *      curl -i --request DELETE http://localhost/candidates/review/1
+     *
+     * @param $args Array
+     */
     public function delete($args)
     {
         // return bad request response if there is not an ID passed.
@@ -71,6 +99,16 @@ class CandidatesController
         ]);
     }
 
+    /**
+     * Search for job's application(s) by given id.
+     *
+     * @api GET /candidates/search/:id
+     * @apiParam Integer id - Job's application id.
+     * @apiExample Example CURL usage
+     *      curl -i --request GET http://localhost/candidates/search/1
+     *
+     * @param $args Array
+     */
     public function search($args)
     {
         // return bad request response if there is not an ID passed.

@@ -6,14 +6,12 @@ use App\Services\AutoLoaderService as AutoLoader;
 class App
 {
     /**
-     * A reference to the singleton instance.
-     *
-     * @var App
+     * @var App - Reference to the singleton instance.
      */
     private static $instance = null;
 
     /**
-     * @var
+     * @var Array
      */
     public $config;
 
@@ -78,5 +76,7 @@ class App
     {
         $loader = AutoLoader::instance();
         $loader->register();
+
+        require_once __DIR__ . '/config/routes.php';
     }
 }

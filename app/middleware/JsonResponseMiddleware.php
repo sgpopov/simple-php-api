@@ -56,7 +56,7 @@ class JsonResponseMiddleware
      *
      * @param $data Array - The data to be displayed.
      */
-    public function updated($data)
+    public static function updated($data)
     {
         self::setHeaders(201);
 

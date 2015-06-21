@@ -18,7 +18,39 @@ class RouterServiceTest extends PHPUnit_Framework_TestCase
         $response = $this->client->get('/jobs/list');
 
         $this->assertEquals(200, $response->getStatusCode());
-//        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
+        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
+
+        $response = $this->client->get('/jobs/2');
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
+    }
+
+
+    public function test_shouldProcessPUTRequests()
+    {
+        $obj = [
+            'position' => 'test',
+            'description' => 'test'
+        ];
+
+        $response = $this->client->put('/jobs/2', [
+            'json' => $obj
+        ]);
+
+        // Successfully updated
+        $this->assertEquals(201, $response->getStatusCode());
+        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
+
+        $data = json_decode($response->getBody(), true);
+        $this->assertEquals('Successfully updated 1 record(s)', $data['message']);
+
+        $response = $this->client->put('/jobs/2', [
+            'json' => $obj
+        ]);
+
+        // Nothing to update
+        $this->assertEquals(204, $response->getStatusCode());
+        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
     }
 
     public function test_shouldHandlePATCHRequestsProperly()

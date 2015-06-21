@@ -49,7 +49,42 @@ class Candidates extends BaseModel
 
         return $output;
     }
-    
+
+    /**
+     * Retrieve job application information by given id.
+     *
+     * @param $application_id Integer - Given id.
+     * @return Array - Application information
+     */
+    public function review($application_id)
+    {
+        // return validation error if the given ID is not valid.
+        if (filter_var($application_id, FILTER_VALIDATE_INT) === 0) {
+            return ['validation', $this->validation_log];
+        }
+
+        $this->query = ''.
+            'SELECT '.
+                'jobs.position, jobs.description, '.
+                'users.first_name, users.last_name, users.email, ' .
+                'candidates.created_on as applied_on '.
+            'FROM candidates '.
+            'INNER JOIN jobs ON jobs.id = candidates.job_id '.
+            'INNER JOIN users ON users.id = candidates.user_id '.
+            'WHERE candidates.id = :job_application_id';
+
+        $this->params = [
+            'job_application_id' => $application_id
+        ];
+
+        $job = $this->query()->fetchAll();
+
+        if (count($job) < 1) {
+            return [];
+        }
+
+        return $job;
+    }
 
     /**
      * Retrieve all candidates for a given job by it's id.
@@ -71,5 +106,4 @@ class Candidates extends BaseModel
 
         return $this->query()->fetchAll($this->fetch_mode);
     }
-
 }

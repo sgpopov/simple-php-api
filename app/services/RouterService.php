@@ -85,6 +85,10 @@ class RouterService
                 $this->action = strtolower($request[2]);
             }
         }
+
+        if (count($request) > 3) {
+            $this->arguments['id'] = $request[3];
+        }
     }
 
     /**

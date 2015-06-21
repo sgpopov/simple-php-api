@@ -12,6 +12,46 @@ class Candidates extends BaseModel
     }
 
     /**
+     * Retrieve all candidates from the database.
+     *
+     * @return Array - All candidates.
+     */
+    public function all()
+    {
+        // Get all users who have applied for a job
+        $this->query = ''.
+            'SELECT users.* ' .
+            'FROM users ' .
+            'INNER JOIN candidates ON candidates.user_id = users.id ' .
+            'GROUP BY users.id';
+
+        $candidates = $this->query()->fetchAll();
+
+        $output = [];
+
+        // Get the jobs information for every user application.
+        foreach ($candidates as $candidate) {
+            array_push($output, $candidate);
+            $outputLastIndex = count($output) - 1;
+
+            $this->query = ''.
+                'SELECT '.
+                    'jobs.id as job_id, jobs.position, jobs.description, '.
+                    'candidates.id as candidate_id, candidates.created_on as applied_on '.
+                'FROM jobs '.
+                'INNER JOIN candidates ON candidates.job_id = jobs.id '.
+                'WHERE candidates.user_id = :user_id';
+            $this->params['user_id'] = $candidate['id'];
+
+            // Create nested "Jobs" property for the user.
+            $output[$outputLastIndex]['jobs'] = $this->query()->fetchAll();
+        }
+
+        return $output;
+    }
+    
+
+    /**
      * Retrieve all candidates for a given job by it's id.
      *
      * @param $job_id Integer - Given job id.

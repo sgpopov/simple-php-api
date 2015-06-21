@@ -64,4 +64,16 @@ class RouterServiceTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('Method Not Allowed', $data['error']);
         $this->assertEquals('The requested method PATCH is not allowed for the URL /jobs/1.', $data['message']);
     }
+
+    public function test_shouldHandleNonExistentRequests()
+    {
+        $response = $this->client->get('/non-existent', ['http_errors' => false]);
+
+        $this->assertEquals(404, $response->getStatusCode());
+        $this->assertEquals(['application/json'], $response->getHeader('Content-Type'));
+
+        $data = json_decode($response->getBody(), true);
+        $this->assertEquals('Not Found', $data['error']);
+        $this->assertEquals('The URI requested is invalid or the resource requested does not exists.', $data['message']);
+    }
 }

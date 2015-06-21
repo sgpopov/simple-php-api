@@ -58,6 +58,7 @@ class App
         self::instance()->config = $config;
         self::instance()->setDebugMode();
         self::instance()->loadFiles();
+        self::instance()->setDefaultResponse();
     }
 
     /**
@@ -78,5 +79,10 @@ class App
         $loader->register();
 
         require_once __DIR__ . '/config/routes.php';
+    }
+
+    private static function setDefaultResponse()
+    {
+        return \App\Middleware\JsonResponseMiddleware::notFound();
     }
 }

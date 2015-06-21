@@ -87,6 +87,21 @@ class JsonResponseMiddleware
     }
 
     /**
+     * Render Not Found" response.
+     */
+    public static function notFound()
+    {
+        self::setHeaders(404);
+
+        $errorMessage = [
+            'error' => 'Not Found',
+            'message' => 'The URI requested is invalid or the resource requested does not exists.'
+        ];
+
+        die(json_encode($errorMessage, App::instance()->config['json_options']));
+    }
+
+    /**
      * Render "Method Not Allowed" error response.
      *
      * @param $method String - Requested method

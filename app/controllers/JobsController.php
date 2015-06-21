@@ -45,13 +45,55 @@ class JobsController
         return Response::success($output);
     }
 
-    public function update()
+    public function update($args)
     {
-        
+        // return bad request response if there is not an ID passed.
+        if (!isset($args['id'])) {
+            return Response::badRequest([
+                'message' => 'Missing job id.'
+            ]);
+        }
+
+        $output = $this->jobs->update($args);
+
+        // return bad request response if there are validation errors
+        if (isset($output['error']) && $output['error'] === 'validation') {
+            return Response::badRequest($output['data']);
+        }
+
+        // return no content response if there are no records for a job
+        if ($output === 0) {
+            return Response::noContent();
+        }
+
+        return Response::updated([
+            'message' => 'Successfully updated '. $output .' record(s)'
+        ]);
     }
 
-    public function delete()
+    public function delete($args)
     {
+        // return bad request response if there is not an ID passed.
+        if (!isset($args['id'])) {
+            return Response::badRequest([
+                'message' => 'Missing job id.'
+            ]);
+        }
 
+        $output = $this->jobs->delete($args);
+
+        // return bad request response if there are validation errors
+        if (isset($output['error']) && $output['error'] === 'validation') {
+            return Response::badRequest($output['data']);
+        }
+
+        // return no content response if there are no records for a job
+        if ($output === 0) {
+            return Response::noContent();
+        }
+
+        return Response::success([
+            'message' => 'Successfully deleted '. $output .' record(s)'
+        ]);
     }
 }

@@ -54,6 +54,77 @@ class Jobs extends BaseModel
     }
 
     /**
+     * Update a job by given id.
+     *
+     * @param $args Array - New data that will be processed.
+     * @return Integer - Number of records affected.
+     */
+    public function update($args)
+    {
+        $q = [];
+
+        // validate the given ID.
+        $this->validate(['id' => $args['id']]);
+
+        $this->params['id'] = $args['id'];
+
+        // validate the "position" data if it's passed.
+        if (isset($args['position'])) {
+            $this->validate(['position' => $args['position']]);
+            array_push($q, "position = :position");
+            $this->params['position'] = $args['position'];
+        }
+
+        // validate the "description" data if it's passed.
+        if (isset($args['description'])) {
+            $this->validate(['description' => $args['description']]);
+            array_push($q, "description = :description");
+            $this->params['description'] = $args['description'];
+        }
+
+        // return validation error if the passed data is not valid.
+        if (count($this->validation_log) > 0) {
+            return [
+                'error' => 'validation',
+                'data' => $this->validation_log
+            ];
+        }
+
+        // create the SQL query.
+        $this->query = "UPDATE jobs SET ". implode(", ", $q) ." WHERE id = :id";
+
+        // execute the query and return the number of rows affected
+        return $this->query()->rowCount();
+    }
+
+    /**
+     * Delete a job by given id.
+     *
+     * @param $args Array
+     * @return Integer - Number of records affected.
+     */
+    public function delete($args)
+    {
+        // validate the given ID.
+        $this->validate(['id' => $args['id']]);
+
+        // return validation error if the given ID is not valid.
+        if (count($this->validation_log) > 0) {
+            return [
+                'error' => 'validation',
+                'data' => $this->validation_log
+            ];
+        }
+
+        // create the SQL query.
+        $this->query = "DELETE FROM jobs WHERE id = :job_id";
+        $this->params['job_id'] = $args['id'];
+
+        // execute the query and return the number of rows affected
+        return $this->query()->rowCount();
+    }
+
+    /**
      * Help function that check if the given args are valid:
      *  - ID: should be an integer
      *  - Position: Should contain only alphabets (a-z, A-Z), spaces and dashes.

@@ -52,6 +52,41 @@ class JsonResponseMiddleware
     }
 
     /**
+     * Render successfully updated resource response.
+     *
+     * @param $data Array - The data to be displayed.
+     */
+    public function updated($data)
+    {
+        self::setHeaders(201);
+
+        echo json_encode($data, App::instance()->config['json_options']);
+        exit;
+    }
+
+    /**
+     * Render no content.
+     */
+    public static function noContent()
+    {
+        self::setHeaders(204);
+        exit;
+    }
+
+    /**
+     * Render "Bad Request" response (validation error).
+     *
+     * @param $data Array - The data to be displayed.
+     */
+    public static function badRequest($data)
+    {
+        self::setHeaders(400);
+
+        echo json_encode($data, App::instance()->config['json_options']);
+        exit;
+    }
+
+    /**
      * Render "Method Not Allowed" error response.
      *
      * @param $method String - Requested method

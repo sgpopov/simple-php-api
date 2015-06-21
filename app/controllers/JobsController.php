@@ -16,11 +16,28 @@ class JobsController
         $this->jobs = new Jobs;
     }
 
+    /**
+     * View all jobs.
+     *
+     * @api GET /jobs/list - Retrieve all jobs.
+     * @apiExample Example CURL usage
+     *      curl -i http://localhost/jobs/list
+     */
     public function index()
     {
         return Response::success($this->jobs->all());
     }
 
+    /**
+     * View a job by given id.
+     *
+     * @api GET /jobs/:id - Request job's information.
+     * @apiParam Integer id - Job id.
+     * @apiExample Example CURL usage
+     *      curl -i http://localhost/jobs/1
+     *
+     * @param $args Array
+     */
     public function view($args)
     {
         // return bad request response if there is not an ID passed.
@@ -45,6 +62,20 @@ class JobsController
         return Response::success($output);
     }
 
+    /**
+     * Update job's information.
+     *
+     * @api PUT /jobs/:id - Modify job's information.
+     * @apiParam Integer id - Job id.
+     * @apiExample Example CURL usage
+     *      curl -i \
+     *          --header "Content-type: application/json" \
+     *          --request PUT \
+     *          --data '{"position": "test position", "description": "simple description"}' \
+     *          http://localhost/jobs/1
+     *
+     * @param $args Array
+     */
     public function update($args)
     {
         // return bad request response if there is not an ID passed.
@@ -71,6 +102,17 @@ class JobsController
         ]);
     }
 
+    /**
+     * Delete a job by given id.
+     * Note: This will also delete all candidates applied for the job.
+     *
+     * @api DELETE /jobs/:id - Delete job.
+     * @apiParam Integer id - Job id..
+     * @apiExample Example CURL usage
+     *      curl -i --request DELETE http://localhost/jobs/1
+     *
+     * @param $args Array
+     */
     public function delete($args)
     {
         // return bad request response if there is not an ID passed.

@@ -39,7 +39,7 @@ class Jobs extends BaseModel
             ':job_id' => $job_id
         ];
 
-        $job = $this->query()->fetchAll($this->fetch_mode);
+        $job = $this->query()->fetchAll();
 
         // return empty array if there are no jobs.
         if (count($job) < 1) {

@@ -44,4 +44,54 @@ class CandidatesController
 
         return Response::success($output);
     }
+
+    public function delete($args)
+    {
+        // return bad request response if there is not an ID passed.
+        if (!isset($args['id'])) {
+            return Response::badRequest([
+                'message' => 'Missing job application id.'
+            ]);
+        }
+
+        $output = $this->candidates->delete($args['id']);
+
+        // return bad request response if there are validation errors
+        if (isset($output['error']) && $output['error'] === 'validation') {
+            return Response::badRequest($output['data']);
+        }
+
+        // return no content response if there are no records for the job application
+        if ($output === 0) {
+            return Response::noContent();
+        }
+
+        return Response::success([
+            'message' => 'Successfully deleted '. $output .' record(s)'
+        ]);
+    }
+
+    public function search($args)
+    {
+        // return bad request response if there is not an ID passed.
+        if (!isset($args['id'])) {
+            return Response::badRequest([
+                'message' => 'Missing application id.'
+            ]);
+        }
+
+        $output = $this->candidates->search($args['id']);
+
+        // return bad request response if there are some kind of a validation errors
+        if (isset($output['error']) && $output['error'] === 'validation') {
+            return Response::badRequest($output['data']);
+        }
+
+        // return no content response if there are no records for the job application
+        if (count($output) < 1) {
+            return Response::noContent();
+        }
+
+        return Response::success($output);
+    }
 }

@@ -60,7 +60,10 @@ class Candidates extends BaseModel
     {
         // return validation error if the given ID is not valid.
         if (filter_var($application_id, FILTER_VALIDATE_INT) === 0) {
-            return ['validation', $this->validation_log];
+            return [
+                'error' => 'validation',
+                'data' => 'Invalid application id.'
+            ];
         }
 
         $this->query = ''.
@@ -75,6 +78,72 @@ class Candidates extends BaseModel
 
         $this->params = [
             'job_application_id' => $application_id
+        ];
+
+        $job = $this->query()->fetchAll();
+
+        if (count($job) < 1) {
+            return [];
+        }
+
+        return $job;
+    }
+
+
+    /**
+     * Delete job application by given id.
+     *
+     * @param $application_id Integer - Given id.
+     * @return Integer - Number of records affected.
+     */
+    public function delete($application_id)
+    {
+        // return validation error if the given ID is not valid.
+        if (filter_var($application_id, FILTER_VALIDATE_INT) === 0) {
+            return [
+                'error' => 'validation',
+                'data' => 'Invalid application id.'
+            ];
+        }
+
+        // create the SQL query.
+        $this->query = 'DELETE FROM candidates WHERE candidates.id = :job_application_id';
+        $this->params = [
+            'job_application_id' => $application_id
+        ];
+
+        // execute the query and return the number of rows affected
+        return $this->query()->rowCount();
+    }
+
+    /**
+     * Search for job application.
+     *
+     * @param $application_id Integer - Given id.
+     * @return Array - Applications information
+     */
+    public function search($application_id)
+    {
+        // return validation error if the given ID is not valid.
+        if (filter_var($application_id, FILTER_VALIDATE_INT) === 0) {
+            return [
+                'error' => 'validation',
+                'data' => 'Invalid application id.'
+            ];
+        }
+
+        $this->query = ''.
+            'SELECT '.
+            'jobs.position, jobs.description, '.
+            'users.first_name, users.last_name, users.email, ' .
+            'candidates.created_on as applied_on, candidates.id as application_id '.
+            'FROM candidates '.
+            'INNER JOIN jobs ON jobs.id = candidates.job_id '.
+            'INNER JOIN users ON users.id = candidates.user_id '.
+            'WHERE candidates.id LIKE :job_application_id';
+
+        $this->params = [
+            'job_application_id' => '%'. $application_id .'%'
         ];
 
         $job = $this->query()->fetchAll();
